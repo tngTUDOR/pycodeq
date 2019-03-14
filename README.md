@@ -167,7 +167,7 @@ To activate the pylint rules inside sonarqube, create a new "quality profile"
 with a descriptive name (pylint), for python, and make it inherit from the profile 
 called "Sonar way".
 
-![new profile](sonarqube-newprofile)
+![new profile](images/sonarqube-newprofile.png)
 
 Add more rules than the ones of "Sonar way" to the new quality profile.
 
