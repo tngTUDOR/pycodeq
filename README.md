@@ -237,19 +237,19 @@ You can safely start with the following contents:
 sonar.projectKey = my_library 
 sonar.sources = my_library
 sonar.language =  py
-sonar.python.xunit.reportPath = pytest-report.xml
 sonar.python.bandit.reportPaths = bandit-report.json
-
 sonar.python.pylint.reportPath = pylint-report.txt
-
 ```
+
 Now that the metrics have been calculated, you can run `sonar-scanner` in your
 project directory, and if all goes well, you will see open your project in `sonarqube`
 and see the results of the analysis.
 
-
 ```bash
 /opt/sonar-scanner-3.3.0.1492-linux/bin/sonar-scanner
+```
+
+```bash
 INFO: Scanner configuration file: /opt/sonar-scanner-3.3.0.1492-linux/conf/sonar-scanner.properties
 INFO: Project root configuration file: /home/tomas/buyrandom/sonar-project.properties
 INFO: SonarQube Scanner 3.3.0.1492
@@ -258,20 +258,9 @@ INFO: Linux 4.20.13-200.fc29.x86_64 amd64
 INFO: User cache: /home/tomas/.sonar/cache
 INFO: SonarQube server 7.6.0
 INFO: Default locale: "en_GB", source code encoding: "UTF-8" (analysis is platform dependent)
-INFO: Load global settings
-INFO: Load global settings (done) | time=123ms
-INFO: Server id: BF41A1F2-AWl-Kus0DRUbG1h68sxa
-INFO: User cache: /home/tomas/.sonar/cache
-INFO: Load/download plugins
-INFO: Load plugins index
-INFO: Load plugins index (done) | time=103ms
-INFO: Load/download plugins (done) | time=151ms
-INFO: Process project properties
-INFO: Execute project builders
-INFO: Execute project builders (done) | time=4ms
-INFO: Project key: buyrandom
-INFO: Base dir: /home/tomas/buyrandom
-INFO: Working dir: /home/tomas/buyrandom/.scannerwork
+```
+...
+```
 INFO: Load project settings
 INFO: Load project repositories
 INFO: Load project repositories (done) | time=11ms
@@ -293,7 +282,6 @@ INFO: Python test coverage
 INFO: Parsing report '/home/tomas/buyrandom/coverage-reports/coverage-buyrandom.xml'
 INFO: Sensor Python Squid Sensor [python] (done) | time=299ms
 INFO: Sensor PythonXUnitSensor [python]
-WARN: No report was found for sonar.python.xunit.reportPath using pattern pytest-report.xml
 INFO: Sensor PythonXUnitSensor [python] (done) | time=3ms
 INFO: Sensor PylintSensor [python]
 INFO: Sensor PylintSensor [python] (done) | time=0ms
@@ -301,29 +289,6 @@ INFO: Sensor PylintImportSensor [python]
 INFO: Sensor PylintImportSensor [python] (done) | time=39ms
 INFO: Sensor Import of Bandit issues [python]
 INFO: Importing /home/tomas/buyrandom/bandit-report.json
-INFO: Sensor Import of Bandit issues [python] (done) | time=22ms
-INFO: Sensor JaCoCo XML Report Importer [jacoco]
-INFO: Sensor JaCoCo XML Report Importer [jacoco] (done) | time=7ms
-INFO: Sensor JavaXmlSensor [java]
-INFO: Sensor JavaXmlSensor [java] (done) | time=1ms
-INFO: Sensor HTML [web]
-INFO: Sensor HTML [web] (done) | time=18ms
-INFO: Sensor Zero Coverage Sensor
-INFO: Sensor Zero Coverage Sensor (done) | time=22ms
-INFO: ------------- Run sensors on project
-INFO: SCM provider for this project is: git
-INFO: 8 files to be analyzed
-INFO: 0/8 files analyzed
-WARN: Missing blame information for the following files:
-WARN:   * buyrandom/adjective.py
-WARN:   * buyrandom/seedfactory.py
-WARN:   * buyrandom/bin/buyrandom_cli.py
-WARN:   * buyrandom/worker.py
-WARN:   * buyrandom/bin/__init__.py
-WARN:   * buyrandom/place.py
-WARN:   * buyrandom/__init__.py
-WARN:   * buyrandom/noun.py
-WARN: This may lead to missing/broken features in SonarQube
 INFO: 4 files had no CPD blocks
 INFO: Calculating CPD for 4 files
 INFO: CPD calculation finished
@@ -340,7 +305,55 @@ INFO: ------------------------------------------------------------------------
 INFO: Total time: 8.425s
 INFO: Final Memory: 24M/398M
 INFO: ------------------------------------------------------------------------
-
 ```
 
+The dashboard in the sonarqube server would look like:
+
 ![sample start dashboard](images/sonarqube-sampledashboard.png)
+
+### Caveats
+
+Up to here, we used a (docker) container to launch the sonarqube server, but
+we did not specify a volume to store the database. This means that next time
+you restart the docker service in your development machine (reboot, or stop
+docker), the data of sonarqube will be lost, and *you will need to activate
+again the  pylint quality profile and associated rules*. Running the container
+with a volume is the first quick solution to this. But the idea, is to use
+sonarque in a local server, as a development solution. To keep permanent track
+(over the long term) of the metrics, you should either use a sonarqube server
+installed on premises, or a cloud based free service like sonarcloud.
+Github has immediate integration with sonarcloud, and the next section in this
+guide will show you how to integrate it with you your github repository.
+
+It is actually simple, but you still have to activate the additional pylint rules.
+
+## Sonarcloud.io
+
+### link sonarcloud to your repo
+
+1. go to the sonarcloud website, and follow the instructions to link your
+repository to sonarcloud [here](https://sonarcloud.io/documentation/integrations/github/)
+
+
+
+## Sonarcloud.io
+
+### link sonarcloud to your repo
+
+1. go to the sonarcloud website, and follow the instructions to link your
+repository to sonarcloud [here](https://sonarcloud.io/documentation/integrations/github/)
+
+
+
+## Sonarcloud.io
+
+### link sonarcloud to your repo
+
+1. go to the sonarcloud website, and follow the instructions to link your
+repository to sonarcloud [here](https://sonarcloud.io/documentation/integrations/github/)
+2. Update the quality profile for python, as done before, to include the pylint
+rules.
+
+Once the association is done, you can execute the analysis either by hand
+withe `sonar-scanner` (provided you specified the server in the `sonar-project.properties` file for example or automatically.
+
